@@ -1,0 +1,372 @@
+-- prims
+
+import java.util.*;
+public class prims {
+    static int primMST(int graph[][],int V){
+        int key[]=new int[V],res=0;
+        Arrays.fill(key,Integer.MAX_VALUE);
+        key[0]=0;
+        boolean mset[]=new boolean[V];
+        for(int count=0;count<V;count++){
+            int u=-1;
+            for(int i=0;i<V;i++){
+                if(!mset[i] && (u==-1||key[i]<key[u])){
+                    u=i;
+                }
+            }
+            mset[u]=true;
+            res=res+key[u];
+            for(int v=0;v<V;v++){
+                if(!mset[v]&& graph[u][v]!=0 && graph[u][v]<key[v]){
+                    key[v]=graph[u][v];
+                }
+            } 
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        int graph[][]={
+                       {0,5,8,0},
+                       {5,0,10,15},
+                       {8,10,0,20},
+                       {0,15,20,0}
+                    };
+        System.out.println(primMST(graph,4)); 
+    }
+}
+
+-------------------------------------------------------------
+-- dik
+import java.util.*;
+public class dik {
+    static int[] diks(int graph[][],int src,int V){
+        int dis[]=new int[V];
+        Arrays.fill(dis,Integer.MAX_VALUE);
+        dis[src]=0;
+        boolean mset[]=new boolean[V];
+        for(int count=0;count<V-1;count++){
+            int u=-1;
+            for(int i=0;i<V;i++){
+                if(!mset[i] && (u==-1||dis[i]<dis[u])){
+                    u=i;
+                }
+            }
+            mset[u]=true;
+            for(int v=0;v<V;v++){
+                if(!mset[v]&&graph[u][v]!=0){
+                    dis[v]=Math.min(dis[v],dis[u]+graph[u][v]);
+                }
+            } 
+        }
+        return dis;
+    }
+    public static void main(String[] args) {
+        int graph[][]={
+                       {0,5,3},
+                       {5,0,1},
+                       {3,1,0}
+                    };
+        System.out.println(Arrays.toString(diks(graph,1,3))); 
+    }
+}
+
+-------------------------------------------------------------------
+-- bst
+
+class Node{
+    int data;
+    Node left,right;
+}
+
+class btree{
+    Node root;
+    btree(){
+        root=null;
+    }
+    void insert(int key){
+        Node temp,ptr;
+        temp=new Node();
+        temp.data=key;
+        temp.left=null;
+        temp.right=null;
+        if(root==null){
+            root=temp;
+        }
+        else{
+            ptr=root;
+            while(ptr !=null){
+                if(ptr.data < key){
+                    if(ptr.right==null){
+                        ptr.right=temp;
+                        break;
+                    }
+                    else{
+                        ptr=ptr.right;
+                    }
+                }
+                else{
+                    if(ptr.left==null){
+                        ptr.left=temp;
+                        break;
+                    }
+                    else{
+                        ptr=ptr.left;
+                    }
+                }
+            }
+        }
+
+     
+    }
+
+    static Node delrec(Node ptr,int key){
+        if(ptr==null){
+            return null;
+        }
+        else if(ptr.data < key){
+            ptr.right=delrec(ptr.right,key);
+        }
+        else if(ptr.data > key){
+            ptr.left=delrec(ptr.left,key);
+        }
+        else{
+            if(ptr.right==null){
+                return ptr.left;
+            }
+            if(ptr.left==null){
+                return ptr.right;
+            }
+            else{
+                Node successor=getsuccessor(ptr);
+                ptr.data=successor.data;
+                ptr.right=delrec(ptr.right,ptr.data);
+                return ptr;
+            }
+        }
+      return ptr;
+    }
+    static Node getsuccessor(Node temp){
+        Node ptr=temp.right;
+        while(ptr.left !=null){
+            ptr=ptr.left;
+        }
+        return ptr;
+    }
+    void delete(int key){
+        delrec(root,key);
+    }
+    void inorder(Node ptr){
+        if(ptr==null){
+            return;
+        }
+        inorder(ptr.left);
+        System.out.print(ptr.data+"--");
+        inorder(ptr.right);
+    }
+    void traversal(){
+        inorder(root);
+    }
+    void search(int key){
+        Node ptr=root;
+        while(ptr !=null){
+            if(ptr.data==key){
+                System.out.println("Element found");
+                break;
+            }
+            else if(ptr.data < key){
+                ptr=ptr.right;
+            }
+            else{
+                ptr=ptr.left;
+            }
+        }
+        if(ptr==null){
+            System.out.println("Element not found");
+        }
+    }
+}
+
+public class bst {
+    public static void main(String[] args) {
+        btree b=new btree();
+        b.insert(50);
+        b.insert(100);
+        b.insert(20);
+        b.insert(5);
+        b.insert(25);
+        b.insert(500);
+        b.insert(75);
+        b.insert(10);
+        b.insert(69);
+        b.insert(35);
+        b.insert(80);
+        b.traversal();
+        b.search(69);
+        b.search(25);
+        b.search(10000);
+        System.out.println();
+        b.delete(69);
+        b.traversal();
+        System.out.println();
+        b.delete(20);
+        b.traversal();
+    }
+}
+
+-------------------------------------------------------
+-- Job
+
+import java.util.*;
+class Job{	
+	char id;
+	int deadline,profit;
+	public Job(){}
+	public Job(char id,int deadline,int profit){
+		this.id=id;
+		this.deadline=deadline;
+		this.profit=profit;
+	}
+	static void printJobScheduling(ArrayList<Job> arr,int t){
+		int n=arr.size();
+		// for array list use size method not length
+		Collections.sort(arr,(a,b)->b.profit-a.profit);
+		boolean result[]=new boolean[t];
+		char job[]=new char[t];
+		for(int i=0;i<n;i++){
+			for(int j=Math.min(t-1,arr.get(i).deadline-1);j>=0;j--){
+				if(result[j]==false){
+					result[j]=true;
+					job[j]=arr.get(i).id;
+					break;
+				}
+			}
+		}
+		for(char jb:job){
+			System.out.print(jb+" "); 
+		}
+		System.out.println();
+	}
+	public static void main(String args[]){
+		ArrayList<Job> arr=new ArrayList<Job>();
+		arr.add(new Job('a', 2, 100));
+		arr.add(new Job('b', 1, 19));
+		arr.add(new Job('c', 2, 27));
+		arr.add(new Job('d', 1, 25));
+		arr.add(new Job('e', 3, 15));
+		System.out.println(	"Following is maximum profit sequence of jobs");
+		Job.printJobScheduling(arr, 3);
+	}
+}
+
+--------------------------------------------------------------------------
+
+--minmax
+
+class pair{
+    int min;
+    int max;
+    public pair(int min,int max){
+        this.min=min;
+        this.max=max;
+    }
+}
+public class minmax {
+    static void findminmax(int arr[],int left,int right,pair p){
+        if(left==right){
+            if(arr[left]<p.min){
+                p.min=arr[left];
+            }
+            if(arr[left]>p.max){
+                p.max=arr[left];
+            }
+            return;
+        }
+        if(right-left==1){
+            if(arr[left]<arr[right]){
+                if(p.max<arr[right]){
+                    p.max=arr[right];
+                }
+                if(arr[left]<p.min){
+                    p.min=arr[left];
+                }
+            }
+            else{
+                if(p.max<arr[left]){
+                    p.max=arr[left];
+                }
+                if(p.min>arr[right]){
+                    p.min=arr[right];
+                }
+            }
+            return;
+        }
+        int mid=(left+right)/2;
+        findminmax(arr,left,mid,p);
+        findminmax(arr,mid,right,p);
+    }
+    public static void main(String[] args) {
+        pair p=new pair(Integer.MAX_VALUE,Integer.MIN_VALUE);
+        int arr[]={21,1,900,232,5000,-1,1221};
+        findminmax(arr,0,arr.length-1,p);
+        System.out.println(p.min+"---"+p.max);
+    }
+}
+
+---------------------------------------------------------------------
+
+-- merge
+
+import java.util.*;
+class sort{
+    static void merge_sort(int arr[]){
+        if(arr.length>1){
+            int mid=arr.length/2;
+            int lefthalf[]=new int[mid];
+            int righthalf[]=new int[arr.length-mid];
+            for(int i=0;i<mid;i++){
+                lefthalf[i]=arr[i];
+            }
+            for(int i=0;i<arr.length-mid;i++){
+                righthalf[i]=arr[mid+i];
+            }
+            merge_sort(lefthalf);
+            merge_sort(righthalf);
+            int i=0,j=0,k=0;
+            while(i<lefthalf.length && j<righthalf.length){
+                if(lefthalf[i]<righthalf[j]){
+                    arr[k]=lefthalf[i];
+                    i=i+1;
+                }
+                else{
+                    arr[k]=righthalf[j];
+                    j=j+1;
+                }
+                k=k+1;
+            }
+            while(i<lefthalf.length){
+                arr[k]=lefthalf[i];
+                i=i+1;
+                k=k+1;
+            }
+            while(j<righthalf.length){
+                arr[k]=righthalf[j];
+                j=j+1;
+                k=k+1;
+            }
+        }
+        System.out.println(Arrays.toString(arr));
+    }
+}
+public class merge {
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        int n=sc.nextInt();
+        int arr[]=new int[n];
+        for(int i=0;i<n;i++){
+            arr[i]=sc.nextInt();
+        }
+        sort.merge_sort(arr);
+        sc.close();
+    }
+}
+--------------------------------------------------------------
