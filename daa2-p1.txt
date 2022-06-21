@@ -1,0 +1,116 @@
+// ----------------------8 - 0/1Knapsack--------------------------
+class Knapsack {
+    static int max(int a, int b) {
+        return (a > b) ? a : b;
+    }
+    public static int knapsack(int W, int[] wt, int[] val, int n) {
+        int[][] K = new int[n + 1][W + 1];
+        for (int i = 0; i <= n; i++) {
+            for (int w = 0; w <= W; w++) {
+                if (i == 0 || w == 0)
+                    K[i][w] = 0;
+                else if (wt[i - 1] <= w)
+                    K[i][w] = max(val[i - 1] + K[i - 1][w - wt[i - 1]], K[i - 1][w]);
+                else
+                    K[i][w] = K[i - 1][w];
+            }
+        }
+        return K[n][W];
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        int[] val = new int[]{60, 100, 120};
+        int[] wt = new int[]{10, 20, 30};
+        int W = 50;
+        int n = val.length;
+        System.out.println(Knapsack.knapsack(W, wt, val, n));
+    }
+}
+// ----------------------/8 - 0/1Knapsack--------------------------
+
+// ----------------------9 - OBST--------------------------
+public class OBST2 {
+    public static int sum(int[] freq, int i, int j) {
+        int s = 0;
+        for (int k = i; k <= j; k++) {
+            if (k >= freq.length)
+                continue;
+            s += freq[k];
+        }
+        return s;
+    }
+    public static int optimalSearchTree(int keys[], int freq[], int n) {
+        int[][] cost = new int[n + 1][n + 1];
+        for (int i = 0; i < n; i++)
+            cost[i][i] = freq[i];
+        for (int L = 2; L <= n; L++) {
+            for (int i = 0; i <= n - L + 1; i++) {
+                int j = i + L - 1;
+                cost[i][j] = Integer.MAX_VALUE;
+                for (int r = i; r <= j; r++) {
+                    int c = ((r > i) ? cost[i][r - 1] : 0) + ((r < j) ? cost[r + 1][j] : 0) + sum(freq, i, j);
+                    if (c < cost[i][j])
+                        cost[i][j] = c;
+                }
+            }
+        }
+        return cost[0][n - 1];
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+//        int[] keys = {10, 20, 30, 40};
+//        int[] frequency = {4, 2, 6, 3};
+        int[] keys = {10, 12, 20};
+        int[] frequency = {34, 8, 50};
+        int length = keys.length;
+        System.out.println("Cost: " + OBST.optimalSearchTree(keys, frequency, length));
+    }
+}
+// ----------------------/9 - OBST--------------------------
+
+// ----------------------10 - Connected Components--------------------------
+class Graph {
+    int V;
+    ArrayList<ArrayList<Integer>> adjListArray;
+    public Graph(int V) {
+        this.V = V;
+        adjListArray = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adjListArray.add(i, new ArrayList<>());
+        }
+    }
+    public void addEdge(int src, int dest) {
+        adjListArray.get(src).add(dest);
+        adjListArray.get(dest).add(src);
+    }
+    public void DFSUtil(int v, boolean[] visited) {
+        visited[v] = true;
+        System.out.print(v + " ");
+        for (int x : adjListArray.get(v)) {
+            if (!visited[x])
+                DFSUtil(x, visited);
+        }
+    }
+    public void connectedComponents() {
+        boolean[] visited = new boolean[V];
+        for (int v = 0; v < V; ++v) {
+            if (!visited[v]) {
+                DFSUtil(v, visited);
+                System.out.println();
+            }
+        }
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Graph g = new Graph(5);
+        g.addEdge(1, 0);
+        g.addEdge(2, 3);
+        g.addEdge(3, 4);
+        System.out.println("Following are connected components");
+        g.connectedComponents();
+    }
+}
+// ----------------------/10 - Connected Components--------------------------

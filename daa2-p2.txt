@@ -1,0 +1,64 @@
+// ----------------------8 - 0/1Knapsack (Recursive)--------------------------
+public class Knapsack {
+    public static int max(int a, int b) {
+        return (a > b) ? a : b;
+    }
+    public static int knapsack(int w, int wt[], int val[], int n) {
+        if (n == 0 || w == 0)
+            return 0;
+        if (wt[n - 1] > w)
+            return knapsack(w, wt, val, n - 1);
+        else
+            return max(val[n - 1] + knapsack(w - wt[n - 1], wt, val, n - 1), knapsack(w, wt, val, n - 1));
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        int[] val = new int[]{60, 100, 120};
+        int[] wt = new int[]{10, 20, 30};
+        int W = 50;
+        int n = val.length;
+        System.out.println(Knapsack2.knapsack(W, wt, val, n));
+    }
+}
+// ----------------------/8 - 0/1Knapsack (Recursive)--------------------------
+
+// ----------------------9 - OBST--------------------------
+public class OBST {
+    public static int start(int[] keys, int[] freq, int n) {
+        return optimizeCost(freq, 0, n - 1);
+    }
+    public static int sum(int[] freq, int i, int j) {
+        int s = 0;
+        for (int k = i; k <= j; k++)
+            s += freq[k];
+        return s;
+    }
+    public static int optimizeCost(int[] freq, int i, int j) {
+        if (j < i)
+            return 0;
+        if (j == i)
+            return freq[i];
+        int fsum = sum(freq, i, j);
+        int min = Integer.MAX_VALUE;
+        for (int r = i; r <= j; ++r) {
+            int cost = optimizeCost(freq, i, r - 1) +
+                    optimizeCost(freq, r + 1, j);
+            if (cost < min)
+                min = cost;
+        }
+        return min + fsum;
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+//        int[] keys = {10, 20, 30, 40};
+//        int[] frequency = {4, 2, 6, 3};
+        int[] keys = {10, 12, 20};
+        int[] frequency = {34, 8, 50};
+        int length = keys.length;
+        System.out.println("Cost: " + OBST2.optimalSearchTree(keys, frequency, length));
+    }
+}
+// ----------------------/9 - OBST--------------------------
+
