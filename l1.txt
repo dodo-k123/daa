@@ -1,0 +1,649 @@
+1) Min Max program
+
+class find_maxmin
+{
+    static int max=0;
+    static int min=999;
+    static int min1=999;
+    static int max1=0;
+    static int mid=0;
+    static void maxmin(int arr[],int i,int j){
+        if(i==j){
+            max=min=arr[i];
+        }
+        else if(i==j-1){
+            if(arr[i]<arr[j]){
+                max=arr[j];
+                min=arr[i];
+            }
+            else{
+                max=arr[i];
+                min=arr[j];
+            }
+        }
+        else{
+            mid=(i+j)/2;
+            maxmin(arr,i,mid);
+            max1=max;
+            min1=min;
+            maxmin(arr,mid+1,j);
+            if(max<max1){
+                max=max1;
+            }
+            if(min>min1){
+                min=min1;
+            }
+        }
+    }
+    public static void main(String args[]){
+        int arr[]={20,10,60,70,90,5};
+        int i=0;
+        int j=arr.length-1;
+        maxmin(arr,i,j);
+        System.out.println(max);
+        System.out.println(min);
+    }
+}
+
+
+2) Merge Sort 
+
+import java.util.*;
+class merge_sort
+{
+	static void sort(int arr[]){
+		if(arr.length>1){
+			int mid=arr.length/2;
+			int lf[]=new int[mid];
+			int rf[]=new int[arr.length-mid];
+			for(int i=0;i<mid;i++){
+				lf[i]=arr[i];
+			}
+			for(int i=0;i<arr.length-mid;i++){
+				rf[i]=arr[mid+i];
+			}
+		int i=0;
+		int j=0;
+		int k=0;
+		sort(lf);
+		sort(rf);
+		while(i<lf.length && j<rf.length){
+			if(lf[i]<rf[j]){
+				arr[k]=lf[i];
+				i=i+1;}
+			else{
+				arr[k]=rf[j];
+				j=j+1;
+			}
+			k=k+1;
+		}
+		while(i<lf.length){
+			arr[k]=lf[i];
+			i=i+1;
+			k=k+1;
+		}
+		while(j<rf.length){
+			arr[k]=rf[j];
+			j=j+1;
+			k=k+1;
+		}
+		System.out.println(Arrays.toString(arr));
+	}
+	}
+
+	public static void main(String ags[]){
+		int arr[]={20,100,40,60,30,96};
+		int i=0;
+		int j=arr.length-1;
+		int n=arr.length;
+		sort(arr);
+	}
+}
+
+3) BST program
+
+class Node{
+    int data;
+    Node left,right;
+}
+class BStree{
+    Node root;
+    public BStree(){
+        root=null;
+    }
+    void insert(int val){
+        Node temp,ptr;
+        temp=new Node();
+        temp.data=val;
+        temp.left=null;
+        temp.right=null;
+        if(root==null){
+            root=temp;
+        }
+        else{
+            ptr=root;
+            while(ptr!=null){
+                if(val>ptr.data){
+                    if(ptr.right==null){
+                        ptr.right=temp;
+                        break;
+                    }
+                    else{
+                        ptr=ptr.right;
+                    }
+                }
+                else if(val<ptr.data){
+                    if(ptr.left==null){
+                        ptr.left=temp;
+                        break;
+                    }
+                    else{
+                        ptr=ptr.left;
+                    }
+                }
+                else{
+                    System.out.println("Invalid input");
+                }
+            }
+        }
+    }
+    void search(int key){
+        Node ptr1;
+        ptr1=root;
+        while(ptr1!=null){
+            if(ptr1.data==key){
+                System.out.println("Element found");
+                break;
+            }
+            else if(key>ptr1.data){
+                ptr1=ptr1.right;
+            }
+            else if(key<ptr1.data){
+                ptr1=ptr1.left;
+            }
+        }
+        if(ptr1==null){
+            System.out.println("Element does not exist");
+        }
+    }
+    public static Node deleterec(Node ptr,int key_d){
+        Node temp1;
+        if(ptr==null) {
+            return null;
+        }
+        if(key_d<ptr.data){
+            ptr.left=deleterec(ptr.left,key_d);
+        }
+        else if(key_d>ptr.data){
+            ptr.right=deleterec(ptr.right,key_d);
+        }
+        else{
+            if(ptr.left==null){
+                return ptr.right;
+            }
+            else if(ptr.right==null){
+                return ptr.left;
+            }
+            else{
+                Node successor=getsuccessor(ptr);
+                ptr.data= successor.data;
+                ptr.right=deleterec(ptr.right,ptr.data);
+            }
+        }
+        return ptr;
+    }
+    public static Node getsuccessor(Node ptr){
+        Node temp=ptr.right;
+        while(temp.left!=null){
+            temp=temp.left;
+        }
+        return temp;
+    }
+    void delete_oper(int key_delete){
+        deleterec(root,key_delete);
+    }
+    static void preorder(Node ptr){
+        if(ptr==null)
+            return;
+        System.out.printf("%d ",ptr.data);
+        preorder(ptr.left);
+        preorder(ptr.right);
+    }
+    void traversal(){
+        preorder(root);
+    }
+}
+public class BST_practice {
+    public static void main(String[] args) {
+        BStree b=new BStree();
+        b.insert(40);
+        b.insert(80);
+        b.insert(35);
+        b.insert(90);
+        b.insert(45);
+        b.insert(50);
+        b.insert(70);
+        b.traversal();
+        b.search(5);
+        b.delete_oper(50);
+        b.traversal();
+    }
+}
+
+4) Job sequencing program
+
+import java.util.*;
+class Job{	
+	char id;
+	int deadline,profit;
+	public Job(){}
+	public Job(char id,int deadline,int profit){
+		this.id=id;
+		this.deadline=deadline;
+		this.profit=profit;
+	}
+	static void printJobScheduling(ArrayList<Job> arr,int t){
+		int n=arr.size();
+		// for array list use size method not length
+		Collections.sort(arr,(a,b)->b.profit-a.profit);
+		boolean result[]=new boolean[t];
+		char job[]=new char[t];
+		for(int i=0;i<n;i++){
+		for(int j=Math.min(t-1,arr.get(i).deadline-1);j>=0;j--){
+				if(result[j]==false){
+					result[j]=true;
+					job[j]=arr.get(i).id;
+					break;
+				}
+			}
+		}
+		for(int i=0;i<t;i++){
+			int profit=0;
+            	for(int j=0;j<n;j++){
+                	if(job[i]==arr.get(j).id){
+					profit=arr.get(j).profit;
+				}
+			}
+			System.out.println("Job :"+job[i]+" profit :"+profit); 
+		}
+	}
+	public static void main(String args[]){
+		ArrayList<Job> arr=new ArrayList<Job>();
+		arr.add(new Job('a', 2, 100));
+		arr.add(new Job('b', 1, 19));
+		arr.add(new Job('c', 2, 27));
+		arr.add(new Job('d', 1, 25));
+		arr.add(new Job('e', 3, 15));
+		System.out.println(	"Following is maximum profit sequence of jobs");
+		Job.printJobScheduling(arr, 3);
+	}
+}
+
+5) Prims algorithm
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+ 
+class MST {
+    // Number of vertices in the graph
+    private static final int V = 5;
+    int minKey(int key[], Boolean mstSet[])
+    {
+        // Initialize min value
+        int min = Integer.MAX_VALUE, min_index = -1;
+ 
+        for (int v = 0; v < V; v++)
+            if (mstSet[v] == false && key[v] < min) {
+                min = key[v];
+                min_index = v;
+            }
+ 
+        return min_index;
+    }
+     void printMST(int parent[], int graph[][])
+    {
+        System.out.println("Edge \tWeight");
+        for (int i = 1; i < V; i++)
+            System.out.println(parent[i] + " - " + i + "\t" + graph[i][parent[i]]);
+    }
+    void primMST(int graph[][])
+    {
+        // Array to store constructed MST
+        int parent[] = new int[V];
+ 
+        // Key values used to pick minimum weight edge in cut
+        int key[] = new int[V];
+ 
+        // To represent set of vertices included in MST
+        Boolean mstSet[] = new Boolean[V];
+ 
+        // Initialize all keys as INFINITE
+        for (int i = 0; i < V; i++) {
+            key[i] = Integer.MAX_VALUE;
+            mstSet[i] = false;
+        }
+ 
+        // Always include first 1st vertex in MST.
+        key[0] = 0; // Make key 0 so that this vertex is
+        // picked as first vertex
+        parent[0] = -1; // First node is always root of MST
+ 
+        // The MST will have V vertices
+        for (int count = 0; count < V - 1; count++) {
+            // Pick thd minimum key vertex from the set of vertices
+            // not yet included in MST
+            int u = minKey(key, mstSet);
+ 
+            // Add the picked vertex to the MST Set
+            mstSet[u] = true;
+ 
+            // Update key value and parent index of the adjacent
+            // vertices of the picked vertex. Consider only those
+            // vertices which are not yet included in MST
+            for (int v = 0; v < V; v++)
+                 if (graph[u][v] != 0 && mstSet[v] == false && graph[u][v] < key[v]) {
+                    parent[v] = u;
+                    key[v] = graph[u][v];
+                }
+        }
+ 
+        // print the constructed MST
+        printMST(parent, graph);
+    }
+ 
+    public static void main(String[] args)
+    {
+        MST t = new MST();
+        int graph[][] = new int[][] { { 0, 2, 0, 6, 0 },
+                                      { 2, 0, 3, 8, 5 },
+                                      { 0, 3, 0, 0, 7 },
+                                      { 6, 8, 0, 0, 9 },
+                                      { 0, 5, 7, 9, 0 } };
+ 
+        // Print the solution
+        t.primMST(graph);
+    }
+}
+
+
+6) Djikstra’s program 
+
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+ 
+class ShortestPath {
+    static final int V = 9;
+    int minDistance(int dist[], Boolean sptSet[])
+    {
+        // Initialize min value
+        int min = Integer.MAX_VALUE, min_index = -1;
+ 
+        for (int v = 0; v < V; v++)
+            if (sptSet[v] == false && dist[v] <= min) {
+                min = dist[v];
+                min_index = v;
+            }
+ 
+        return min_index;
+    }
+ 
+    // A utility function to print the constructed distance array
+    void printSolution(int dist[])
+    {
+        System.out.println("Vertex \t\t Distance from Source");
+        for (int i = 0; i < V; i++)
+            System.out.println(i + " \t\t " + dist[i]);
+    }
+ 
+    
+    void dijkstra(int graph[][], int src)
+    {
+        int dist[] = new int[V]; 
+        Boolean sptSet[] = new Boolean[V];
+ 
+        // Initialize all distances as INFINITE and stpSet[] as false
+        for (int i = 0; i < V; i++) {
+            dist[i] = Integer.MAX_VALUE;
+            sptSet[i] = false;
+        }
+ 
+        // Distance of source vertex from itself is always 0
+        dist[src] = 0;
+ 
+        // Find shortest path for all vertices
+        for (int count = 0; count < V - 1; count++) {
+            int u = minDistance(dist, sptSet);
+            sptSet[u] = true;
+ 
+            // Update dist value of the adjacent vertices of the
+            // picked vertex.
+            for (int v = 0; v < V; v++)
+                if (!sptSet[v] && graph[u][v] != 0 && dist[u] != Integer.MAX_VALUE && dist[u] + graph[u][v] < dist[v])
+                    dist[v] = dist[u] + graph[u][v];
+        }
+ 
+        // print the constructed distance array
+        printSolution(dist);
+    }
+ 
+    // Driver method
+    public static void main(String[] args)
+    {
+        
+        int graph[][] = new int[][] { { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
+                                      { 4, 0, 8, 0, 0, 0, 0, 11, 0 },
+                                      { 0, 8, 0, 7, 0, 4, 0, 0, 2 },
+                                      { 0, 0, 7, 0, 9, 14, 0, 0, 0 },
+                                      { 0, 0, 0, 9, 0, 10, 0, 0, 0 },
+                                      { 0, 0, 4, 14, 10, 0, 2, 0, 0 },
+                                      { 0, 0, 0, 0, 0, 2, 0, 1, 6 },
+                                      { 8, 11, 0, 0, 0, 0, 1, 0, 7 },
+                                      { 0, 0, 2, 0, 0, 0, 6, 7, 0 } };
+        ShortestPath t = new ShortestPath();
+        t.dijkstra(graph, 0);
+    }
+}
+
+7) Kruskal algorithm
+class Main
+{
+ 
+static int V = 5;
+static int[] parent = new int[V];
+static int INF = Integer.MAX_VALUE;
+
+static int find(int i)
+{
+    while (parent[i] != i)
+        i = parent[i];
+    return i;
+}
+
+static void union1(int i, int j)
+{
+    int a = find(i);
+    int b = find(j);
+    parent[a] = b;
+}
+
+static void kruskalMST(int cost[][])
+{
+    int mincost = 0; 
+    
+    for (int i = 0; i < V; i++)
+        parent[i] = i;
+ 
+    int edge_count = 0;
+    while (edge_count < V - 1)
+    {
+        int min = INF, a = -1, b = -1;
+        for (int i = 0; i < V; i++) 
+        {
+            for (int j = 0; j < V; j++) 
+            {
+                if (find(i) != find(j) && cost[i][j] < min) 
+                {
+                    min = cost[i][j];
+                    a = i;
+                    b = j;
+                }
+            }
+        }
+ 
+        union1(a, b);
+        System.out.printf("Edge %d:(%d, %d) cost:%d \n",
+            edge_count++, a, b, min);
+        mincost += min;
+    }
+    System.out.printf("\n Minimum cost= %d \n", mincost);
+}
+
+public static void main(String[] args)
+{
+/* Let us create the following graph
+        2 3
+    (0)--(1)--(2)
+    | / \ |
+    6| 8/ \5 |7
+    | /     \ |
+    (3)-------(4)
+            9         */
+    
+    int cost[][] = {
+        { INF, 2, INF, 6, INF },
+        { 2, INF, 3, 8, 5 },
+        { INF, 3, INF, INF, 7 },
+        { 6, 8, INF, INF, 9 },
+        { INF, 5, 7, 9, INF },
+    };
+ 
+    // Print the solution
+    kruskalMST(cost);
+    }
+}
+
+
+16) MinMax (google method)
+
+class pair{
+    int min;
+    int max;
+    public pair(int min,int max){
+        this.min=min;
+        this.max=max;
+    }
+}
+public class minmax {
+    static void findminmax(int arr[],int left,int right,pair p){
+        if(left==right){
+            if(arr[left]<p.min){
+                p.min=arr[left];
+            }
+            if(arr[left]>p.max){
+                p.max=arr[left];
+            }
+            return;
+        }
+        if(right-left==1){
+            if(arr[left]<arr[right]){
+                if(p.max<arr[right]){
+                    p.max=arr[right];
+                }
+                if(arr[left]<p.min){
+                    p.min=arr[left];
+                }
+            }
+            else{
+                if(p.max<arr[left]){
+                    p.max=arr[left];
+                }
+                if(p.min>arr[right]){
+                    p.min=arr[right];
+                }
+            }
+            return;
+        }
+        int mid=(left+right)/2;
+        findminmax(arr,left,mid,p);
+        findminmax(arr,mid,right,p);
+    }
+    public static void main(String[] args) {
+        pair p=new pair(Integer.MAX_VALUE,Integer.MIN_VALUE);
+        int arr[]={21,1,900,232,5000,-1,1221};
+        findminmax(arr,0,arr.length-1,p);
+        System.out.println(p.min+"---"+p.max);
+    }
+}
+
+17) Prims algorithm(short program)
+import java.util.*;
+public class prims {
+    static int primMST(int graph[][],int V){
+        int key[]=new int[V],res=0;
+        Arrays.fill(key,Integer.MAX_VALUE);
+        key[0]=0;
+        boolean mset[]=new boolean[V];
+        for(int count=0;count<V;count++){
+            int u=-1;
+            for(int i=0;i<V;i++){
+                if(!mset[i] && (u==-1||key[i]<key[u])){
+                    u=i;
+                }
+            }
+            mset[u]=true;
+            res=res+key[u];
+            for(int v=0;v<V;v++){
+                if(!mset[v]&& graph[u][v]!=0 && graph[u][v]<key[v]){
+                    key[v]=graph[u][v];
+                }
+            } 
+        }
+        return res;
+    }
+    public static void main(String[] args) {
+        int graph[][]={
+                       {0,5,8,0},
+                       {5,0,10,15},
+                       {8,10,0,20},
+                       {0,15,20,0}
+                    };
+        System.out.println(primMST(graph,4)); 
+    }
+}
+
+18) Djikstra program (short one)
+
+import java.util.*;
+public class dik {
+    static int[] diks(int graph[][],int src,int V){
+        int dis[]=new int[V];
+        Arrays.fill(dis,Integer.MAX_VALUE);
+        dis[src]=0;
+        boolean mset[]=new boolean[V];
+        for(int count=0;count<V-1;count++){
+            int u=-1;
+            for(int i=0;i<V;i++){
+                if(!mset[i] && (u==-1||dis[i]<dis[u])){
+                    u=i;
+                }
+            }
+            mset[u]=true;
+            for(int v=0;v<V;v++){
+                if(!mset[v]&&graph[u][v]!=0){
+                    dis[v]=Math.min(dis[v],dis[u]+graph[u][v]);
+                }
+            } 
+        }
+        return dis;
+    }
+    public static void main(String[] args) {
+        int graph[][]={
+                       {0,5,3},
+                       {5,0,1},
+                       {3,1,0}
+                    };
+        System.out.println(Arrays.toString(diks(graph,1,3))); 
+    }
+}

@@ -1,0 +1,233 @@
+8) OBST program 
+ public class GFG
+{
+    static int optCost(int freq[], int i, int j)
+    {
+       // Base cases
+       if (j < i)      // no elements in this subarray
+         return 0;
+       if (j == i)     // one element in this subarray
+         return freq[i];
+      
+       // Get sum of freq[i], freq[i+1], ... freq[j]
+       int fsum = sum(freq, i, j);
+      
+       // Initialize minimum value
+       int min = Integer.MAX_VALUE;
+       for (int r = i; r <= j; ++r)
+       {
+           int cost = optCost(freq, i, r-1) +
+                          optCost(freq, r+1, j);
+           if (cost < min)
+              min = cost;
+       }
+      
+       // Return minimum value
+       return min + fsum;
+    }
+    static int optimalSearchTree(int keys[], int freq[], int n)
+    {
+         return optCost(freq, 0, n-1);
+    }
+     
+    // A utility function to get sum of array elements
+        // freq[i] to freq[j]
+    static int sum(int freq[], int i, int j)
+    {
+        int s = 0;
+        for (int k = i; k <=j; k++)
+           s += freq[k];
+        return s;
+    }
+     
+    // Driver code
+    public static void main(String[] args) {
+        int keys[] = {10, 12, 20};
+        int freq[] = {34, 8, 50};
+        int n = keys.length;
+        System.out.println("Cost of Optimal BST is " +
+                         optimalSearchTree(keys, freq, n));
+    }
+}
+
+9) 0/1 knapsack Dynamic
+class Knapsack {
+
+	static int max(int a, int b)
+	{
+		return (a > b) ? a : b;
+	}
+
+	static int knapSack(int W, int wt[],
+						int val[], int n)
+	{
+		int i, w;
+		int K[][] = new int[n + 1][W + 1];
+
+		// Build table K[][] in bottom up manner
+		for (i = 0; i <= n; i++)
+		{
+			for (w = 0; w <= W; w++)
+			{
+				if (i == 0 || w == 0)
+					K[i][w] = 0;
+				else if (wt[i - 1] <= w)
+					K[i][w]
+						= max(val[i - 1]
+						+ K[i - 1][w - wt[i - 1]],
+						K[i - 1][w]);
+				else
+					K[i][w] = K[i - 1][w];
+			}
+		}
+
+		return K[n][W];
+	}
+
+	// Driver code
+	public static void main(String args[])
+	{
+		int val[] = new int[] { 60, 100, 120 };
+		int wt[] = new int[] { 10, 20, 30 };
+		int W = 50;
+		int n = val.length;
+		System.out.println(knapSack(W, wt, val, n));
+	}
+}
+
+10)Connected components
+import java.util.ArrayList;
+class Graph
+{
+	int V;
+	ArrayList<ArrayList<Integer> > adjListArray;
+
+	// constructor
+	Graph(int V)
+	{
+		this.V = V;
+		// define the size of array as
+		// number of vertices
+		adjListArray = new ArrayList<>();
+
+		// Create a new list for each vertex
+		// such that adjacent nodes can be stored
+
+		for (int i = 0; i < V; i++) {
+			adjListArray.add(i, new ArrayList<>());
+		}
+	}
+
+	// Adds an edge to an undirected graph
+	void addEdge(int src, int dest)
+	{
+		// Add an edge from src to dest.
+		adjListArray.get(src).add(dest);
+
+		// Since graph is undirected, add an edge from dest
+		// to src also
+		adjListArray.get(dest).add(src);
+	}
+
+	void DFSUtil(int v, boolean[] visited)
+	{
+		// Mark the current node as visited and print it
+		visited[v] = true;
+		System.out.print(v + " ");
+		// Recur for all the vertices
+		// adjacent to this vertex
+		for (int x : adjListArray.get(v)) {
+			if (!visited[x])
+				DFSUtil(x, visited);
+		}
+	}
+	void connectedComponents()
+	{
+		// Mark all the vertices as not visited
+		boolean[] visited = new boolean[V];
+		for (int v = 0; v < V; ++v) {
+			if (!visited[v]) {
+				// print all reachable vertices
+				// from v
+				DFSUtil(v, visited);
+				System.out.println();
+			}
+		}
+	}
+
+	// Driver code
+	public static void main(String[] args)
+	{
+		// Create a graph given in the above diagram
+		Graph g = new Graph(
+			5); // 5 vertices numbered from 0 to 4
+
+		g.addEdge(1, 0);
+		g.addEdge(2, 3);
+		g.addEdge(3, 4);
+		System.out.println(
+			"Following are connected components");
+		g.connectedComponents();
+	}
+}
+
+
+15) OBST dynamic program
+
+// Dynamic Programming Java code for Optimal Binary Search
+// Tree Problem
+public class Optimal_BST2 {
+	static int optimalSearchTree(int keys[], int freq[], int n) {
+
+		/* Create an auxiliary 2D matrix to store results of
+		subproblems */
+		int cost[][] = new int[n + 1][n + 1];
+
+		// For a single key, cost is equal to frequency of the key
+		for (int i = 0; i < n; i++)
+			cost[i][i] = freq[i];
+
+		// Now we need to consider chains of length 2, 3, ... .
+		// L is chain length.
+		for (int L = 2; L <= n; L++) {
+
+			// i is row number in cost[][]
+			for (int i = 0; i <= n - L + 1; i++) {
+				int j = i + L - 1;
+				cost[i][j] = Integer.MAX_VALUE;
+
+				// Try making all keys in interval keys[i..j] as root
+				for (int r = i; r <= j; r++) {
+
+					// c = cost when keys[r] becomes root of this subtree
+					int c = ((r > i) ? cost[i][r - 1] : 0)
+							+ ((r < j) ? cost[r + 1][j] : 0) + sum(freq, i, j);
+					if (c < cost[i][j])
+						cost[i][j] = c;
+				}
+			}
+		}
+		return cost[0][n - 1];
+	}
+
+
+	static int sum(int freq[], int i, int j) {
+		int s = 0;
+		for (int k = i; k <= j; k++) {
+			if (k >= freq.length)
+				continue;
+			s += freq[k];
+		}
+		return s;
+	}
+
+	public static void main(String[] args) {
+		
+		int keys[] = { 10, 12, 20 };
+		int freq[] = { 34, 8, 50 };
+		int n = keys.length;
+		System.out.println("Cost of Optimal BST is "
+				+ optimalSearchTree(keys, freq, n));
+	}
+
+}
